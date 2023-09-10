@@ -1,0 +1,15 @@
+<title>Äks</title>
+<h1>Welcome to Äks</h1>
+
+<a href="/login">Login</a>
+
+<p>Don't have an account?</p>
+
+<a href="/register">Register</a>
+
+Viestien määrä: {{ count }}
+<hr>
+{% for message in messages %}
+{{ message.content }}
+<hr>
+{% endfor %}
