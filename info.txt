@@ -1,0 +1,5 @@
+1. Activate the virtual enviroment with command
+venv/scripts/activate
+
+2. Activate flask with
+flask run
