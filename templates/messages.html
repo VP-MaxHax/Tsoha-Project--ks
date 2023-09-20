@@ -4,11 +4,9 @@
 {% include 'navbar.html' %}
 
 <hr>
-<h3>Latest messages</h3>
+<h3># of messages: {{ count }}</h3>
 <hr>
 {% for message in messages %}
 <a href="/messages/{{message.id}}">{{ message.content }}</a>
 <hr>
 {% endfor %}
-
-<a href="/messages">View all messages.</a>

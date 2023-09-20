@@ -12,9 +12,30 @@ db = SQLAlchemy(app)
 
 @app.route("/")
 def index():
-    result = db.session.execute(text("SELECT content FROM messages"))
-    messages = result.fetchall()
+    messages = get_latest()
     return render_template("index.html", count=len(messages), messages=messages) 
+
+def get_messages():
+    result = db.session.execute(text("SELECT id, content FROM messages"))
+    messages = result.fetchall()
+    return messages
+
+def get_latest():
+    result = db.session.execute(text("SELECT id, content FROM messages ORDER BY id LIMIT 5"))
+    messages = result.fetchall()
+    return messages
+
+@app.route("/messages")
+def messages_all():
+    messages = get_messages()
+    return render_template("messages.html", count=len(messages), messages=messages)
+
+@app.route("/messages/<int:id>")
+def detailed(id):
+    sql = text("SELECT content FROM messages WHERE id=:id")
+    result = db.session.execute(sql, {"id":id})
+    message = result.fetchone()
+    return render_template("detailed.html", message=message)
 
 @app.route("/login")
 def login():
