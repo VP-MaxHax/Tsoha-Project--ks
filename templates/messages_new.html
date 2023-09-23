@@ -1,0 +1,11 @@
+<title>Äks</title>
+<h1>Welcome to Äks</h1>
+
+{% include 'navbar.html' %}
+
+<body>
+    <h2>Post a new message</h2>
+    <form method="POST" action="/newmessage">
+        <input type="text" name="message" placeholder="Write the message here">
+        <button type="submit">Post</button>
+    </form>

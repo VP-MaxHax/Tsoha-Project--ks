@@ -37,6 +37,22 @@ def detailed(id):
     message = result.fetchone()
     return render_template("detailed.html", message=message)
 
+@app.route("/messages/new")
+def messages_new():
+    return render_template("messages_new.html")
+
+@app.route("/newmessage", methods=["POST"])
+def newmessage():
+    content = request.form["message"]
+    if content:
+        sql = text("SELECT user_id FROM users WHERE username=:username")
+        result = db.session.execute(sql, {"username":session["username"]})
+        user = result.fetchone()
+        sql = text("INSERT INTO messages (content, posted_by, hidden) VALUES (:content, :posted_by, :hidden);")
+        db.session.execute(sql, {"content":content, "posted_by":user[0], "hidden":"f"})
+        db.session.commit()
+    return redirect("/messages")
+
 @app.route("/login")
 def login():
     return render_template("login.html")
@@ -47,7 +63,7 @@ def login_user():
     password = request.form["password"]
     sql = text("SELECT user_id, password FROM users WHERE username=:username")
     result = db.session.execute(sql, {"username":username})
-    user = result.fetchone()  
+    user = result.fetchone()
     if not user:
         raise Exception("Wrong username")
     else:

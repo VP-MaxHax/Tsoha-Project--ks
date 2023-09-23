@@ -3,8 +3,10 @@
 
 {% include 'navbar.html' %}
 
+<h3>Showing all messages</h3>
+<a href="/messages/new">Click here to post a new message</a>
 <hr>
-<h3># of messages: {{ count }}</h3>
+<h5># of messages: {{ count }}</h5>
 <hr>
 {% for message in messages %}
 <a href="/messages/{{message.id}}">{{ message.content }}</a>
