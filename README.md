@@ -11,7 +11,7 @@ Other features include:
 
 User control: Register, login and post as a user under your own Äks™ alias.
 
-Following other users: Follow other users to get quick access to their Äksöns™(posts).
+Following other users: Follow other users to get quick access to their posts.
 
 Äks-club™: Tired of the rubble rousers giving you hard time? Then you shoud subscribe to Äks-club™! Äks-club™ gives you access to private lounge where only other Äks-club™ members can see your messages! This only for cheap 30€/month subscribtion. Want to try out Äks-club™? Use our 1hour trial access code: Äks4Life
 

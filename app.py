@@ -13,7 +13,13 @@ db = SQLAlchemy(app)
 @app.route("/")
 def index():
     messages = get_latest()
-    return render_template("index.html", count=len(messages), messages=messages) 
+    return render_template("index.html", count=len(messages), messages=messages)
+
+def get_userid():
+    sql = text("SELECT user_id FROM users WHERE username=:username")
+    result = db.session.execute(sql, {"username":session["username"]})
+    user = result.fetchone()
+    return user[0]
 
 def get_messages():
     result = db.session.execute(text("SELECT id, content FROM messages"))
@@ -45,11 +51,9 @@ def messages_new():
 def newmessage():
     content = request.form["message"]
     if content:
-        sql = text("SELECT user_id FROM users WHERE username=:username")
-        result = db.session.execute(sql, {"username":session["username"]})
-        user = result.fetchone()
+        user = get_userid()
         sql = text("INSERT INTO messages (content, posted_by, hidden) VALUES (:content, :posted_by, :hidden);")
-        db.session.execute(sql, {"content":content, "posted_by":user[0], "hidden":"f"})
+        db.session.execute(sql, {"content":content, "posted_by":user, "hidden":"f"})
         db.session.commit()
     return redirect("/messages")
 
