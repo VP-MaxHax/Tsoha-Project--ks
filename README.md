@@ -24,9 +24,32 @@ To be done:
 - Ability to comment a message
 - Message search
 - Ability to follow users
-- Ability to view only followed users messages
+- Ability to filter only followed users messages
 - Registering as a subscriber
 - Limited access, subscribers only message space.
 - Admin users with ability to moderate messages
 - Making the frontend user-friendly
 - Removing the non essential files from repository
+
+
+How to test:
+
+1. Activate virtual enviroment with command '/venv/scripts/activate'
+
+2. Activate flask with command 'flask run'
+
+3. Website is usable in address 'http://127.0.0.1:5000/'
+
+
+psql database can be accessed trought console with following:
+
+Give console command 'psql' to activate the database interface.
+
+Command '\dt;' shows all the tables.
+
+To show content of specific table use command 'SELECT * FROM table_name'
+
+Tables included currently:
+messages (Has some test messages to demo the features)
+users (Has 3 test account to try out the user features. username///pass as follows
+       test///123     test2///456     test3///789)
