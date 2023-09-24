@@ -19,9 +19,9 @@ Done:
 - User registering and login functions
 - Showing of posted messages
 - Ability to post a new message
+- Ability to comment a message
 
 To be done:
-- Ability to comment a message
 - Message search
 - Ability to follow users
 - Ability to filter only followed users messages
@@ -47,9 +47,10 @@ Give console command 'psql' to activate the database interface.
 
 Command '\dt;' shows all the tables.
 
-To show content of specific table use command 'SELECT * FROM table_name'
+To show content of specific table use command 'SELECT * FROM table_name;'
 
 Tables included currently:
 messages (Has some test messages to demo the features)
 users (Has 3 test account to try out the user features. username///pass as follows
        test///123     test2///456     test3///789)
+comments

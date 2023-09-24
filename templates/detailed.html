@@ -4,5 +4,25 @@
 {% include 'navbar.html' %}
 
 <hr>
+<h2>Message:</h2>
+<hr>
 
-{{ message.content }}
+<h3>{{ username.0 }}</h3>
+<p>{{ message.content }}</p>
+
+<hr>
+<h2>Comments:</h2>
+<hr>
+{% for comment in comments %}
+<p>{{ comment.posted_by }}</p>
+<p>{{ comment.content }}</p>
+<hr>
+{% endfor %}
+
+<body>
+    <h2>Post a new comment</h2>
+    <form method="POST" action="/newcomment">
+        <input type="text" name="comment" placeholder="Write the comment here">
+        <input type="hidden" name="id" value={{message.id}}>
+        <button type="submit">Post</button>
+    </form>

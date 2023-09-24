@@ -21,13 +21,19 @@ def get_userid():
     user = result.fetchone()
     return user[0]
 
+def get_username(user_id):
+    sql = text("SELECT username FROM users WHERE user_id=:user_id")
+    result = db.session.execute(sql, {"user_id":user_id})
+    username = result.fetchone()
+    return username
+
 def get_messages():
     result = db.session.execute(text("SELECT id, content FROM messages"))
     messages = result.fetchall()
     return messages
 
 def get_latest():
-    result = db.session.execute(text("SELECT id, content FROM messages ORDER BY id LIMIT 5"))
+    result = db.session.execute(text("SELECT id, content FROM messages ORDER BY id DESC LIMIT 5"))
     messages = result.fetchall()
     return messages
 
@@ -38,10 +44,12 @@ def messages_all():
 
 @app.route("/messages/<int:id>")
 def detailed(id):
-    sql = text("SELECT content FROM messages WHERE id=:id")
+    sql = text("SELECT id, content, posted_by FROM messages WHERE id=:id")
     result = db.session.execute(sql, {"id":id})
     message = result.fetchone()
-    return render_template("detailed.html", message=message)
+    username = get_username(message[2])
+    comments = get_comments(id)
+    return render_template("detailed.html", message=message, comments=comments, username=username)
 
 @app.route("/messages/new")
 def messages_new():
@@ -101,3 +109,22 @@ def register_user():
 def logout():
     session["username"] = None
     return redirect("/")
+
+@app.route("/newcomment", methods=["POST"])
+def new_comment():
+    content = request.form["comment"]
+    id = request.form["id"]
+    user = session["username"]
+    if not user:
+        user="Anonymous"
+    if content:
+        sql = text("INSERT INTO comments (content, source_msg, posted_by, hidden) VALUES (:content, :source_msg, :posted_by, :hidden);")
+        db.session.execute(sql, {"content":content, "source_msg":id, "posted_by":user, "hidden":"f"})
+        db.session.commit()
+    return redirect(f"/messages/{id}")
+
+def get_comments(id):
+    sql = text("SELECT content, posted_by FROM comments WHERE source_msg=:source_msg")
+    result = db.session.execute(sql, {"source_msg":id})
+    comments = result.fetchall()
+    return comments
