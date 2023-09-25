@@ -50,6 +50,7 @@ Command '\dt;' shows all the tables.
 To show content of specific table use command 'SELECT * FROM table_name;'
 
 Tables included currently:
+
 messages (Has some test messages to demo the features)
 
 users (Has 3 test account to try out the user features. username///pass as follows
