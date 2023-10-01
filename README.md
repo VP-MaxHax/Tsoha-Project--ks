@@ -55,5 +55,4 @@ messages (Has some test messages to demo the features)
 
 users (Has 3 test account to try out the user features. username///pass as follows
        test///123     test2///456     test3///789)
-       
-comments (Has some test comments from registered and anonymous users.)
+comments
