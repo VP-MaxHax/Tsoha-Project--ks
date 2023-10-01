@@ -37,6 +37,15 @@ def get_latest():
     messages = result.fetchall()
     return messages
 
+@app.route("/messages/search", methods=["POST"])
+def search():
+    query = request.form["query"]
+    if query:
+        sql = text("SELECT id, content FROM messages WHERE content LIKE :query;")
+        result = db.session.execute(sql, {"query":"%"+query+"%"})
+        messages = result.fetchall()
+        return render_template("messages.html", count=len(messages), messages=messages)
+
 @app.route("/messages")
 def messages_all():
     messages = get_messages()
