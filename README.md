@@ -20,10 +20,10 @@ Done:
 - Showing of posted messages
 - Ability to post a new message
 - Ability to comment a message
+- Message search
+- Ability to follow users (Works only trough user page)
 
 To be done:
-- Message search
-- Ability to follow users
 - Ability to filter only followed users messages
 - Registering as a subscriber
 - Limited access, subscribers only message space.
@@ -41,7 +41,7 @@ How to test:
 3. Website is usable in address 'http://127.0.0.1:5000/'
 
 
-psql database can be accessed trought console with following:
+psql database can be accessed trough console with following:
 
 Give console command 'psql' to activate the database interface.
 
@@ -49,10 +49,6 @@ Command '\dt;' shows all the tables.
 
 To show content of specific table use command 'SELECT * FROM table_name;'
 
-Tables included currently:
+Tables included currently: messages, users, comments, following
 
-messages (Has some test messages to demo the features)
-
-users (Has 3 test account to try out the user features. username///pass as follows
-       test///123     test2///456     test3///789)
-comments
+Table details are in info.txt in case schema.sql import does not work.

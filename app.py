@@ -58,7 +58,7 @@ def detailed(id):
     message = result.fetchone()
     username = get_username(message[2])
     comments = get_comments(id)
-    return render_template("detailed.html", message=message, comments=comments, username=username)
+    return render_template("detailed.html", message=message, comments=comments, username=username, user_id=message[2])
 
 @app.route("/messages/new")
 def messages_new():
@@ -137,3 +137,39 @@ def get_comments(id):
     result = db.session.execute(sql, {"source_msg":id})
     comments = result.fetchall()
     return comments
+
+@app.route("/followuser", methods=["POST"])
+def follow_user():
+    user = get_userid()
+    id = request.form["id"]
+    if user:
+        sql = text("INSERT INTO follows (user_id, following_id) VALUES (:user_id, :following_id);")
+        db.session.execute(sql, {"user_id":user, "following_id":id})
+        db.session.commit()
+        return redirect(f"/user/{id}")
+    return render_template("error.html", error="Must be logged in to follow users!")
+
+@app.route("/unfollowuser", methods=["POST"])
+def unfollow_user():
+    user = get_userid()
+    id = request.form["id"]
+    if user:
+        sql = text("DELETE FROM follows WHERE user_id=:user_id AND following_id=:following_id;")
+        db.session.execute(sql, {"user_id":user, "following_id":id})
+        db.session.commit()
+        return redirect(f"/user/{id}")
+    return render_template("error.html", error="Must be logged in to follow users!")
+
+@app.route("/user/<int:id>")
+def user_details(id):
+    sql = text("SELECT username, last_login FROM users WHERE user_id=:id")
+    result = db.session.execute(sql, {"id":id})
+    user = result.fetchone()
+    sql = text("SELECT following_id FROM follows WHERE user_id=user_id")
+    result = db.session.execute(sql, {"user_id":get_userid()})
+    following = result.fetchall()
+    is_following = False
+    for i in following:
+        if i[0]==id:
+            is_following = True
+    return render_template("user.html", user = user, following = is_following, page_id = id)

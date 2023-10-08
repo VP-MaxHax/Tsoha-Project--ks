@@ -1,0 +1,22 @@
+<title>Äks</title>
+<h1>Welcome to Äks</h1>
+
+{% include 'navbar.html' %}
+
+<h3>User info on {{ user.username }}</h3>
+
+<p>Last login on: {{ user.last_login }}</p>
+
+{% if following %}
+<p>You are following this user.</p>
+<form method="POST" action="/unfollowuser">
+    <input type="hidden" name="id" value={{page_id}}>
+    <button type="submit">Unfollow</button>
+</form>
+{% else %}
+<p>You are not following this user</p>
+<form method="POST" action="/followuser">
+    <input type="hidden" name="id" value={{page_id}}>
+    <button type="submit">Follow</button>
+</form>
+{% endif %}
