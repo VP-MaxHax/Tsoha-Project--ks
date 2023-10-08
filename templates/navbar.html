@@ -1,6 +1,8 @@
 {% if session.username %}
 <p>You're logged in as {{ session.username }}</p>
 <a href="/logout">Log out</a>
+<p></p>
+<a href="/followed">Show followed users messages</a>
 {% else %}
 <a href="/login">Login</a>
 <p>Don't have an account?</p>

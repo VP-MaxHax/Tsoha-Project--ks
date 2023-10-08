@@ -22,9 +22,9 @@ Done:
 - Ability to comment a message
 - Message search
 - Ability to follow users (Works only trough user page)
+- Ability to filter only followed users messages
 
 To be done:
-- Ability to filter only followed users messages
 - Registering as a subscriber
 - Limited access, subscribers only message space.
 - Admin users with ability to moderate messages

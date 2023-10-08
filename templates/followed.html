@@ -1,0 +1,14 @@
+<title>Äks</title>
+<h1>Welcome to Äks</h1>
+
+{% include 'navbar.html' %}
+
+<h3>Showing followed users messages</h3>
+
+<hr>
+<h5># of messages: {{ count }}</h5>
+<hr>
+{% for message in messages %}
+<a href="/messages/{{message.id}}">{{ message.content }}</a>
+<hr>
+{% endfor %}

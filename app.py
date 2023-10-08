@@ -37,6 +37,22 @@ def get_latest():
     messages = result.fetchall()
     return messages
 
+def get_followed():
+    user = get_userid()
+    helplist = []
+    if user:
+        sql = text("SELECT following_id FROM follows WHERE user_id=:user")
+        result = db.session.execute(sql, {"user":user})
+        following = result.fetchall()
+        for i in following:
+            helplist.append(str(i[0]))
+        following = " OR posted_by=".join(helplist)
+        sql = text(f"SELECT id, content FROM messages WHERE posted_by={following}")
+        result = db.session.execute(sql)
+        messages = result.fetchall()
+        return messages
+    return render_template("error.html", error="Must be logged in to get followed list!")
+
 @app.route("/messages/search", methods=["POST"])
 def search():
     query = request.form["query"]
@@ -50,6 +66,12 @@ def search():
 def messages_all():
     messages = get_messages()
     return render_template("messages.html", count=len(messages), messages=messages)
+
+@app.route("/followed")
+def messages_followed():
+    messages = get_followed()
+    return render_template("followed.html", count=len(messages), messages=messages)
+
 
 @app.route("/messages/<int:id>")
 def detailed(id):
