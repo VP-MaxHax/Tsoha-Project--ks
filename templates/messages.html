@@ -8,6 +8,7 @@
 <h4>Search from messages</h4>
 <form method="POST" action="/messages/search">
     <input type="text" name="query" placeholder="Search a message">
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
     <button type="submit">Search</button>
 </form>
 

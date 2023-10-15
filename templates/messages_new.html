@@ -7,5 +7,6 @@
     <h2>Post a new message</h2>
     <form method="POST" action="/newmessage">
         <input type="text" name="message" placeholder="Write the message here">
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
         <button type="submit">Post</button>
     </form>

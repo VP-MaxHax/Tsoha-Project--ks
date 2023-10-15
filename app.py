@@ -6,6 +6,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import datetime
 from os import getenv
 from db import get_userid, get_username, get_messages, get_latest, get_followed, get_comments, db
+from secrets import token_hex
 
 app = Flask(__name__)
 app.secret_key = getenv("SECRET_KEY")
@@ -26,6 +27,9 @@ def index():
 @app.route("/messages/search", methods=["POST"])
 def search():
     query = request.form["query"]
+    if session["username"]:
+        if session["csrf_token"] != request.form["csrf_token"]:
+            return render_template("error.html", error="Error 403. Forbidden.")
     if query:
         sql = text("SELECT id, content FROM messages WHERE content LIKE :query;")
         result = db.session.execute(sql, {"query":"%"+query+"%"})
@@ -63,6 +67,8 @@ def messages_new():
 @app.route("/newmessage", methods=["POST"])
 def newmessage():
     content = request.form["message"]
+    if session["csrf_token"] != request.form["csrf_token"]:
+        return render_template("error.html", error="Error 403. Forbidden.")
     if content:
         user = get_userid()
         sql = text("INSERT INTO messages (content, posted_by, hidden) VALUES (:content, :posted_by, :hidden);")
@@ -89,6 +95,7 @@ def login_user():
         hash_value = user.password
         if check_password_hash(hash_value, password):
             session["username"] = username
+            session["csrf_token"] = token_hex(16)
             return redirect("/")
         else:
             return redirect("/login")
@@ -111,6 +118,7 @@ def register_user():
                                  "sub_exp":time, "is_active":"t", "is_staff":"f", "last_login":time})
         db.session.commit()
         session["username"] = username
+        session["csrf_token"] = token_hex(16)
         return redirect("/")
     return redirect("/register")
 
@@ -118,6 +126,7 @@ def register_user():
 @app.route("/logout")
 def logout():
     session["username"] = None
+    session["csrf_token"] = None
     return redirect("/")
 
 #Handles adding a new commet to database
@@ -128,6 +137,9 @@ def new_comment():
     user = session["username"]
     if not user:
         user="Anonymous"
+    else:
+        if session["csrf_token"] != request.form["csrf_token"]:
+            return render_template("error.html", error="Error 403. Forbidden.")
     if content:
         sql = text("INSERT INTO comments (content, source_msg, posted_by, hidden) VALUES (:content, :source_msg, :posted_by, :hidden);")
         db.session.execute(sql, {"content":content, "source_msg":id, "posted_by":user, "hidden":"f"})
@@ -139,6 +151,8 @@ def new_comment():
 def follow_user():
     user = get_userid()
     id = request.form["id"]
+    if session["csrf_token"] != request.form["csrf_token"]:
+        return render_template("error.html", error="Error 403. Forbidden.")
     if user:
         sql = text("INSERT INTO follows (user_id, following_id) VALUES (:user_id, :following_id);")
         db.session.execute(sql, {"user_id":user, "following_id":id})
@@ -151,6 +165,8 @@ def follow_user():
 def unfollow_user():
     user = get_userid()
     id = request.form["id"]
+    if session["csrf_token"] != request.form["csrf_token"]:
+        return render_template("error.html", error="Error 403. Forbidden.")
     if user:
         sql = text("DELETE FROM follows WHERE user_id=:user_id AND following_id=:following_id;")
         db.session.execute(sql, {"user_id":user, "following_id":id})
