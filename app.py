@@ -4,11 +4,12 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import text
 from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import datetime
+from os import getenv
 from db import get_userid, get_username, get_messages, get_latest, get_followed, get_comments, db
 
 app = Flask(__name__)
-app.secret_key = "a4540e650c519ab55774ce2e5aad57b3"
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql:///postgres"
+app.secret_key = getenv("SECRET_KEY")
+app.config["SQLALCHEMY_DATABASE_URI"] = getenv("DATABASE_URL")
 
 db.init_app(app)
 
