@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import text
 from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import datetime
+from db import get_userid, get_username, get_messages, get_latest, get_followed, get_comments
 
 app = Flask(__name__)
 app.secret_key = "a4540e650c519ab55774ce2e5aad57b3"
@@ -15,43 +16,6 @@ def index():
     messages = get_latest()
     return render_template("index.html", count=len(messages), messages=messages)
 
-def get_userid():
-    sql = text("SELECT user_id FROM users WHERE username=:username")
-    result = db.session.execute(sql, {"username":session["username"]})
-    user = result.fetchone()
-    return user[0]
-
-def get_username(user_id):
-    sql = text("SELECT username FROM users WHERE user_id=:user_id")
-    result = db.session.execute(sql, {"user_id":user_id})
-    username = result.fetchone()
-    return username
-
-def get_messages():
-    result = db.session.execute(text("SELECT id, content FROM messages"))
-    messages = result.fetchall()
-    return messages
-
-def get_latest():
-    result = db.session.execute(text("SELECT id, content FROM messages ORDER BY id DESC LIMIT 5"))
-    messages = result.fetchall()
-    return messages
-
-def get_followed():
-    user = get_userid()
-    helplist = []
-    if user:
-        sql = text("SELECT following_id FROM follows WHERE user_id=:user")
-        result = db.session.execute(sql, {"user":user})
-        following = result.fetchall()
-        for i in following:
-            helplist.append(str(i[0]))
-        following = " OR posted_by=".join(helplist)
-        sql = text(f"SELECT id, content FROM messages WHERE posted_by={following}")
-        result = db.session.execute(sql)
-        messages = result.fetchall()
-        return messages
-    return render_template("error.html", error="Must be logged in to get followed list!")
 
 @app.route("/messages/search", methods=["POST"])
 def search():
@@ -153,12 +117,6 @@ def new_comment():
         db.session.execute(sql, {"content":content, "source_msg":id, "posted_by":user, "hidden":"f"})
         db.session.commit()
     return redirect(f"/messages/{id}")
-
-def get_comments(id):
-    sql = text("SELECT content, posted_by FROM comments WHERE source_msg=:source_msg")
-    result = db.session.execute(sql, {"source_msg":id})
-    comments = result.fetchall()
-    return comments
 
 @app.route("/followuser", methods=["POST"])
 def follow_user():
