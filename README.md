@@ -34,11 +34,26 @@ To be done:
 
 How to test:
 
-1. Activate virtual enviroment with command '/venv/scripts/activate'
+1. Create a new virtual enviroment with command 'python3 -m venv venv'
 
-2. Activate flask with command 'flask run'
+2. Activate the virtual inviroment with command 'source venv/bin/activate' (Path may change depending on python version and operating system)
 
-3. Website is usable in address 'http://127.0.0.1:5000/'
+3. Install dependicies from requirements.txt with command 'pip install -r requirements.txt'
+
+4. Create file named '.env' to main folder of the app.
+
+5. Enter your preferred database to '.env' file as follows 'DATABASE_URL = postgresql:///*database_name*'. Replace '*database_name*' with your preferred database.
+
+6. Enter secret key to '.env' file as follows 'SECRET_KEY = *secretkey*'. Replace *secretkey* with you own secret key. You can create one with following chain of command: python3-->import secrets-->secrets.token_hex(16)
+
+7. Check that you chosen database don't have any tables on it to begin with.
+
+8. Import tables from schema.sql to current database with command 'psql < schqma.sql'. Tables can also be added manually by copying the create table commands from schqma.sql to you preferred psql interface.
+
+9. Now you should be able to start up the flask app with command 'flask run'.
+
+10. The website is accessible in address 'http://127.0.0.1:5000'
+
 
 
 psql database can be accessed trough console with following:
@@ -50,5 +65,3 @@ Command '\dt;' shows all the tables.
 To show content of specific table use command 'SELECT * FROM table_name;'
 
 Tables included currently: messages, users, comments, following
-
-Table details are in info.txt in case schema.sql import does not work.
