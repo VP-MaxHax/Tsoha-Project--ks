@@ -4,19 +4,24 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import text
 from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import datetime
-from db import get_userid, get_username, get_messages, get_latest, get_followed, get_comments
+from db import get_userid, get_username, get_messages, get_latest, get_followed, get_comments, db
 
 app = Flask(__name__)
 app.secret_key = "a4540e650c519ab55774ce2e5aad57b3"
 app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql:///postgres"
-db = SQLAlchemy(app)
 
+db.init_app(app)
+
+if __name__ == "__main__":
+    app.run()
+
+#Index page
 @app.route("/")
 def index():
     messages = get_latest()
     return render_template("index.html", count=len(messages), messages=messages)
 
-
+#Message search method
 @app.route("/messages/search", methods=["POST"])
 def search():
     query = request.form["query"]
@@ -26,17 +31,19 @@ def search():
         messages = result.fetchall()
         return render_template("messages.html", count=len(messages), messages=messages)
 
+#Page shows all messages
 @app.route("/messages")
 def messages_all():
     messages = get_messages()
     return render_template("messages.html", count=len(messages), messages=messages)
 
+#page shows followed peoples messages
 @app.route("/followed")
 def messages_followed():
     messages = get_followed()
     return render_template("followed.html", count=len(messages), messages=messages)
 
-
+#Page shows detailed info on message
 @app.route("/messages/<int:id>")
 def detailed(id):
     sql = text("SELECT id, content, posted_by FROM messages WHERE id=:id")
@@ -46,10 +53,12 @@ def detailed(id):
     comments = get_comments(id)
     return render_template("detailed.html", message=message, comments=comments, username=username, user_id=message[2])
 
+#Page that allows new messages to be posted
 @app.route("/messages/new")
 def messages_new():
     return render_template("messages_new.html")
 
+#Page that adds new messages to database
 @app.route("/newmessage", methods=["POST"])
 def newmessage():
     content = request.form["message"]
@@ -60,10 +69,12 @@ def newmessage():
         db.session.commit()
     return redirect("/messages")
 
+#Login info can be give on thi page
 @app.route("/login")
 def login():
     return render_template("login.html")
 
+#Login info is handled trough this operation
 @app.route("/loginuser",methods=["POST"])
 def login_user():
     username = request.form["username"]
@@ -81,10 +92,12 @@ def login_user():
         else:
             return redirect("/login")
 
+#New user can be registered on this page
 @app.route("/register")
 def register():
     return render_template("/register.html")
 
+#Handles the database input for new users
 @app.route("/registeruser", methods=["POST"])
 def register_user():
     username = request.form["username"]
@@ -100,11 +113,13 @@ def register_user():
         return redirect("/")
     return redirect("/register")
 
+#Logs out the current user
 @app.route("/logout")
 def logout():
     session["username"] = None
     return redirect("/")
 
+#Handles adding a new commet to database
 @app.route("/newcomment", methods=["POST"])
 def new_comment():
     content = request.form["comment"]
@@ -118,6 +133,7 @@ def new_comment():
         db.session.commit()
     return redirect(f"/messages/{id}")
 
+#Adds followed information to database
 @app.route("/followuser", methods=["POST"])
 def follow_user():
     user = get_userid()
@@ -129,6 +145,7 @@ def follow_user():
         return redirect(f"/user/{id}")
     return render_template("error.html", error="Must be logged in to follow users!")
 
+#Removes followed information from database
 @app.route("/unfollowuser", methods=["POST"])
 def unfollow_user():
     user = get_userid()
@@ -140,6 +157,7 @@ def unfollow_user():
         return redirect(f"/user/{id}")
     return render_template("error.html", error="Must be logged in to follow users!")
 
+#Page detailing information of specific users
 @app.route("/user/<int:id>")
 def user_details(id):
     sql = text("SELECT username, last_login FROM users WHERE user_id=:id")

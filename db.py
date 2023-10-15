@@ -5,8 +5,7 @@ from sqlalchemy.sql import text
 from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import datetime
 
-app = Flask(__name__)
-db = SQLAlchemy(app)
+db = SQLAlchemy()
 
 #Fetch user id based on active session username
 def get_userid():
