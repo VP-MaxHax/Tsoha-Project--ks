@@ -3,7 +3,7 @@ from flask import redirect, render_template, request, session
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import text
 from werkzeug.security import check_password_hash, generate_password_hash
-from datetime import datetime
+from datetime import datetime, timedelta
 from os import getenv
 from db import get_userid, get_username, get_messages, get_latest, get_followed, get_comments, db
 from secrets import token_hex
@@ -189,3 +189,22 @@ def user_details(id):
         if i[0]==id:
             is_following = True
     return render_template("user.html", user = user, following = is_following, page_id = id)
+
+@app.route("/membership")
+def membership():
+    return render_template("membership.html")
+
+@app.route("/apply_membership", methods=["POST"])
+def apply_membership():
+    user = get_userid()
+    code = request.form["code"]
+    exp_time = datetime.now() + timedelta(minutes=15)
+    if session["csrf_token"] != request.form["csrf_token"]:
+        return render_template("error.html", error="Error 403. Forbidden.")
+    if user and code == "Äks4Life":
+        sql = text("UPDATE users SET is_sub=True, sub_exp=:exp_time WHERE user_id=:user_id;")
+        exp_time = datetime.now() + timedelta(minutes=15)
+        db.session.execute(sql, {"exp_time":exp_time, "user_id":user})
+        db.session.commit()
+        return redirect("/")
+    return redirect("/membership")

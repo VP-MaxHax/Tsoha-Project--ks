@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+
+body {
+    margin: auto;
+    max-width: 45em;
+    font-family: 'Helvetica', 'Arial', sans-serif;
+}
+
+h1,h3,h4,form {text-align: center;}
+
+</style>
+</head>
+
+<body>
+    <title>Äks</title>
+    <h1>Welcome to Äks</h1>
+
+    {% include 'navbar.html' %}
+    {% if session.username %}
+        <h3>Become an Äks-club™ member!</h3>
+
+        <p>Imagine a well tought out payment method layout here.</p>
+
+        <h4>Enter a code to get a free trial.</h4>
+
+        <form method="POST" action="/apply_membership">
+            <input type="text" name="code" placeholder="Enter code here">
+            <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+            <button type="submit">Enter code</button>
+        </form>
+
+        <p>For test purposes use code "Äks4Life" for a 15min membership.</p>
+    {% else %}
+        <p>Login first to become a member.</p>
+    {% endif %}
+</body>
