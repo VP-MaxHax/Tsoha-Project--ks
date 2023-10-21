@@ -35,6 +35,7 @@ def search():
         result = db.session.execute(sql, {"query":"%"+query+"%"})
         messages = result.fetchall()
         return render_template("messages.html", count=len(messages), messages=messages)
+    return redirect("/messages")
 
 #Page shows all messages
 @app.route("/messages")

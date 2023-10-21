@@ -1,14 +1,32 @@
-<title>Äks</title>
-<h1>Welcome to Äks</h1>
+<!DOCTYPE html>
+<html>
+<head>
+<style>
 
-{% include 'navbar.html' %}
+body {
+    margin: auto;
+    max-width: 45em;
+    font-family: 'Helvetica', 'Arial', sans-serif;
+}
 
-<hr>
-<h3>Latest messages</h3>
-<hr>
-{% for message in messages %}
-<a href="/messages/{{message.id}}">{{ message.content }}</a>
-<hr>
-{% endfor %}
+h1 {text-align: center;}
 
-<a href="/messages">View all messages.</a>
+</style>
+</head>
+
+<body>
+    <title>Äks</title>
+    <h1>Welcome to Äks</h1>
+
+    {% include 'navbar.html' %}
+
+    <hr>
+    <h3>Latest messages</h3>
+    <hr>
+    {% for message in messages %}
+    <a href="/messages/{{message.id}}">{{ message.content }}</a>
+    <hr>
+    {% endfor %}
+
+    <a href="/messages">View all messages.</a>
+</body>

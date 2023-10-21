@@ -1,29 +1,47 @@
-<title>Äks</title>
-<h1>Welcome to Äks</h1>
+<!DOCTYPE html>
+<html>
+<head>
+<style>
 
-{% include 'navbar.html' %}
+body {
+    margin: auto;
+    max-width: 45em;
+    font-family: 'Helvetica', 'Arial', sans-serif;
+}
 
-<hr>
-<h2>Message:</h2>
-<hr>
+h1 {text-align: center;}
 
-<h3>{{ username.0 }} <a href="/user/{{user_id}}"> User details </a></h3>
-<p>{{ message.content }}</p>
-
-<hr>
-<h2>Comments:</h2>
-<hr>
-{% for comment in comments %}
-<p>{{ comment.posted_by }}</p>
-<p>{{ comment.content }}</p>
-<hr>
-{% endfor %}
+</style>
+</head>
 
 <body>
-    <h2>Post a new comment</h2>
-    <form method="POST" action="/newcomment">
-        <input type="text" name="comment" placeholder="Write the comment here">
-        <input type="hidden" name="id" value={{message.id}}>
-        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-        <button type="submit">Post</button>
-    </form>
+    <title>Äks</title>
+    <h1>Welcome to Äks</h1>
+
+    {% include 'navbar.html' %}
+
+    <hr>
+    <h2>Message:</h2>
+    <hr>
+
+    <h3>{{ username.0 }} <a href="/user/{{user_id}}"> User details </a></h3>
+    <p>{{ message.content }}</p>
+
+    <hr>
+    <h2>Comments:</h2>
+    <hr>
+    {% for comment in comments %}
+    <p>{{ comment.posted_by }}</p>
+    <p>{{ comment.content }}</p>
+    <hr>
+    {% endfor %}
+
+    <body>
+        <h2>Post a new comment</h2>
+        <form method="POST" action="/newcomment">
+            <input type="text" name="comment" placeholder="Write the comment here">
+            <input type="hidden" name="id" value={{message.id}}>
+            <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+            <button type="submit">Post</button>
+        </form>
+</body>

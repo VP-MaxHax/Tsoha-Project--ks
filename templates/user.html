@@ -1,24 +1,42 @@
-<title>Äks</title>
-<h1>Welcome to Äks</h1>
+<!DOCTYPE html>
+<html>
+<head>
+<style>
 
-{% include 'navbar.html' %}
+body {
+    margin: auto;
+    max-width: 45em;
+    font-family: 'Helvetica', 'Arial', sans-serif;
+}
 
-<h3>User info on {{ user.username }}</h3>
+h1 {text-align: center;}
 
-<p>Last login on: {{ user.last_login }}</p>
+</style>
+</head>
 
-{% if following %}
-<p>You are following this user.</p>
-<form method="POST" action="/unfollowuser">
-    <input type="hidden" name="id" value={{page_id}}>
-    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-    <button type="submit">Unfollow</button>
-</form>
-{% else %}
-<p>You are not following this user</p>
-<form method="POST" action="/followuser">
-    <input type="hidden" name="id" value={{page_id}}>
-    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-    <button type="submit">Follow</button>
-</form>
-{% endif %}
+<body>
+    <title>Äks</title>
+    <h1>Welcome to Äks</h1>
+
+    {% include 'navbar.html' %}
+
+    <h3>User info on {{ user.username }}</h3>
+
+    <p>Last login on: {{ user.last_login }}</p>
+
+    {% if following %}
+    <p>You are following this user.</p>
+    <form method="POST" action="/unfollowuser">
+        <input type="hidden" name="id" value={{page_id}}>
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+        <button type="submit">Unfollow</button>
+    </form>
+    {% else %}
+    <p>You are not following this user</p>
+    <form method="POST" action="/followuser">
+        <input type="hidden" name="id" value={{page_id}}>
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+        <button type="submit">Follow</button>
+    </form>
+    {% endif %}
+</body>

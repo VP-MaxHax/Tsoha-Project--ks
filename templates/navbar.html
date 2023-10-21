@@ -1,10 +1,41 @@
-{% if session.username %}
-<p>You're logged in as {{ session.username }}</p>
-<a href="/logout">Log out</a>
-<p></p>
-<a href="/followed">Show followed users messages</a>
-{% else %}
-<a href="/login">Login</a>
-<p>Don't have an account?</p>
-<a href="/register">Register</a>
-{% endif %}
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+.nav {
+  background-color: white; 
+  list-style-type: none;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+
+.nav li {
+  display: inline-block;
+  font-size: 20px;
+  padding: 20px;
+}
+</style>
+</head>
+<body>
+
+
+
+<ul class="nav">
+        {% if session.username %}
+        <p>You're logged in as {{ session.username }}</p>
+        <li><a href="/">Home</a></li>
+        <li><a href="/messages">Messages</a></li>
+        <li><a href="/followed">Show followed users messages</a></li>
+        <li><a href="/logout">Log out</a></li>
+        {% else %}
+        <li><a href="/">Home</a></li>
+        <li><a href="/messages">Messages</a></li>
+        <li><a href="/login">Login</a></li>
+        <li><a href="/register">Register</a></li>
+        {% endif %}
+    </li>
+  </ul>
+  
+  </body>
+  </html>
