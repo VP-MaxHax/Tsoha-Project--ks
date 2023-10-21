@@ -1,5 +1,3 @@
-CREATE TABLE visitors (id SERIAL PRIMARY KEY, time TIMESTAMP);
-
 Users table:
 CREATE TABLE users (
 	user_id serial PRIMARY KEY,
@@ -17,6 +15,7 @@ CREATE TABLE messages (
 	id serial PRIMARY KEY,
 	content VARCHAR ( 100 ),
 	posted_by INTEGER,
+	is_for_members BOOLEAN NOT NULL
 	hidden BOOLEAN
 );
 

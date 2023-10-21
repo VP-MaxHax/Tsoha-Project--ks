@@ -9,11 +9,16 @@ body {
     font-family: 'Helvetica', 'Arial', sans-serif;
 }
 
-h1 {text-align: center;}
+h1, h3 {text-align: center;}
 
 </style>
 </head>
 
 <body>
-    {{ error }}
+    <title>Äks</title>
+    <h1>Welcome to Äks</h1>
+
+    {% include 'navbar.html' %}
+
+    <h3>{{ error }}</h3>
 </body>

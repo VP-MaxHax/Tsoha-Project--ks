@@ -25,12 +25,12 @@ Done:
 - Ability to follow users (Works only trough user page)
 - Ability to filter only followed users messages
 - Removing the non essential files from repository
+- Registering as a subscriber
+- Limited access, subscribers only message space. (Members messages also shown in other areas if member)
 
 To be done:
-- Registering as a subscriber
-- Limited access, subscribers only message space.
 - Admin users with ability to moderate messages
-- Making the frontend user-friendly
+- Making the frontend more user-friendly
 
 
 How to test:

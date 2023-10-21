@@ -5,7 +5,7 @@ from sqlalchemy.sql import text
 from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import datetime, timedelta
 from os import getenv
-from db import get_userid, get_username, get_messages, get_latest, get_followed, get_comments, db
+from db import get_userid, get_username, get_messages, get_latest, get_followed, get_comments, db, get_membership, get_clubmessages
 from secrets import token_hex
 
 app = Flask(__name__)
@@ -62,18 +62,22 @@ def detailed(id):
 #Page that allows new messages to be posted
 @app.route("/messages/new")
 def messages_new():
+    user = get_userid()
+    if user and get_membership:
+        return render_template("messages_new_mb.html")
     return render_template("messages_new.html")
 
 #Page that adds new messages to database
 @app.route("/newmessage", methods=["POST"])
 def newmessage():
     content = request.form["message"]
+    is_for_members = request.form["is_for_members"]
     if session["csrf_token"] != request.form["csrf_token"]:
         return render_template("error.html", error="Error 403. Forbidden.")
     if content:
         user = get_userid()
-        sql = text("INSERT INTO messages (content, posted_by, hidden) VALUES (:content, :posted_by, :hidden);")
-        db.session.execute(sql, {"content":content, "posted_by":user, "hidden":"f"})
+        sql = text("INSERT INTO messages (content, posted_by, hidden, is_for_members) VALUES (:content, :posted_by, :hidden :is_for_members);")
+        db.session.execute(sql, {"content":content, "posted_by":user, "hidden":"f", "is_for_members":is_for_members})
         db.session.commit()
     return redirect("/messages")
 
@@ -190,10 +194,12 @@ def user_details(id):
             is_following = True
     return render_template("user.html", user = user, following = is_following, page_id = id)
 
+#Page for getting Äks-club memberships
 @app.route("/membership")
 def membership():
     return render_template("membership.html")
 
+#Handles writing new memberships to database
 @app.route("/apply_membership", methods=["POST"])
 def apply_membership():
     user = get_userid()
@@ -208,3 +214,12 @@ def apply_membership():
         db.session.commit()
         return redirect("/")
     return redirect("/membership")
+
+@app.route("/club")
+def aks_club():
+    user = get_userid
+    if user and get_membership():
+        messages = get_clubmessages()
+        return render_template("club.html", count=len(messages), messages=messages)
+    return render_template("error.html", error="You have to be logged in and a Äks-Club member to access this page.")
+
