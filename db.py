@@ -124,8 +124,10 @@ def log_user(action_type: str):
 #Fetches all all rows from tables users, messages and comments. Used in admin page.
 def fetch_all():
     sql_users = db.session.execute(text("SELECT user_id, username FROM users ORDER BY user_id"))
-    sql_messages = db.session.execute(text("SELECT id, content, posted_by FROM messages ORDER BY id"))
-    sql_comments = db.session.execute(text("SELECT comment_id, content, source_msg, poster_id FROM comments ORDER BY comment_id"))
+    sql_messages = db.session.execute(text("SELECT id, content, posted_by\
+                                            FROM messages ORDER BY id"))
+    sql_comments = db.session.execute(text("SELECT comment_id, content, source_msg, poster_id\
+                                            FROM comments ORDER BY comment_id"))
     users = sql_users.fetchall()
     messages = sql_messages.fetchall()
     comments = sql_comments.fetchall()
