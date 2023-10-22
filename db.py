@@ -25,15 +25,20 @@ def get_username(user_id:int):
 def get_messages():
     if get_membership:
         result = db.session.execute(text("SELECT id, content FROM messages"))
+        count = db.session.execute(text("SELECT COUNT(*) FROM messages"))
     else:
         result = db.session.execute(text("SELECT id, content FROM messages WHERE is_for_members=False"))
+        count = db.session.execute(text("SELECT COUNT(*) FROM messages WHERE is_for_members=False"))
     messages = result.fetchall()
-    return messages
+    amount = count.fetchone()
+    return messages, amount
 
 def get_clubmessages():
     result = db.session.execute(text("SELECT id, content FROM messages WHERE is_for_members=True"))
+    count = db.session.execute(text("SELECT COUNT(*) FROM messages WHERE is_for_members=True"))
     messages = result.fetchall()
-    return messages
+    amount = count.fetchone()
+    return messages, amount
 
 #Fetch latest five messages from database
 def get_latest():
@@ -57,12 +62,14 @@ def get_followed():
             helplist.append(str(i[0]))
         following = " OR posted_by=".join(helplist)
         if sub_status:
-            sql = text(f"SELECT id, content FROM messages WHERE posted_by={following}")
+            result = db.session.execute(text(f"SELECT id, content FROM messages WHERE posted_by={following}"))
+            count = db.session.execute(text(f"SELECT COUNT(*) FROM messages WHERE posted_by={following}"))
         else:
-            sql = text(f"SELECT id, content FROM messages WHERE posted_by={following} AND is_for_members=False")
-        result = db.session.execute(sql)
+            result = db.session.execute(text(f"SELECT id, content FROM messages WHERE posted_by={following} AND is_for_members=False"))
+            count = db.session.execute(text(f"SELECT COUNT(*) FROM messages WHERE posted_by={following} AND is_for_members=False"))
         messages = result.fetchall()
-        return messages
+        amount = count.fetchone()
+        return messages, amount
     return render_template("error.html", error="Must be logged in to get followed list!")
 
 #Fetch comments for specific message specified by id

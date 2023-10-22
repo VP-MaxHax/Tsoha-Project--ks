@@ -32,22 +32,25 @@ def search():
             return render_template("error.html", error="Error 403. Forbidden.")
     if query:
         sql = text("SELECT id, content FROM messages WHERE content LIKE :query;")
+        count = text("SELECT COUNT(*) FROM messages WHERE content LIKE :query;")
         result = db.session.execute(sql, {"query":"%"+query+"%"})
+        amount = db.session.execute(count, {"query":"%"+query+"%"})
         messages = result.fetchall()
-        return render_template("messages.html", count=len(messages), messages=messages)
+        count = amount.fetchone()
+        return render_template("messages.html", count=count[0], messages=messages)
     return redirect("/messages")
 
 #Page shows all messages
 @app.route("/messages")
 def messages_all():
-    messages = get_messages()
-    return render_template("messages.html", count=len(messages), messages=messages)
+    messages, count = get_messages()
+    return render_template("messages.html", count=count[0], messages=messages)
 
 #page shows followed peoples messages
 @app.route("/followed")
 def messages_followed():
-    messages = get_followed()
-    return render_template("followed.html", count=len(messages), messages=messages)
+    messages, count = get_followed()
+    return render_template("followed.html", count=count[0], messages=messages)
 
 #Page shows detailed info on message
 @app.route("/messages/<int:id>")
@@ -225,7 +228,7 @@ def apply_membership():
 def aks_club():
     user = get_userid
     if user and get_membership():
-        messages = get_clubmessages()
-        return render_template("club.html", count=len(messages), messages=messages)
+        messages, count = get_clubmessages()
+        return render_template("club.html", count=count[0], messages=messages)
     return render_template("error.html", error="You have to be logged in and a Äks-Club member to access this page.")
 
