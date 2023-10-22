@@ -141,13 +141,15 @@ def new_comment():
     id = request.form["id"]
     user = session["username"]
     if not user:
-        user="Anonymous"
+        user = "Anonymous"
+        poster_id = "0"
     else:
+        poster_id = get_userid()
         if session["csrf_token"] != request.form["csrf_token"]:
             return render_template("error.html", error="Error 403. Forbidden.")
     if content:
-        sql = text("INSERT INTO comments (content, source_msg, posted_by, hidden) VALUES (:content, :source_msg, :posted_by, :hidden);")
-        db.session.execute(sql, {"content":content, "source_msg":id, "posted_by":user, "hidden":"f"})
+        sql = text("INSERT INTO comments (content, source_msg, posted_by, poster_id, hidden) VALUES (:content, :source_msg, :posted_by, :poster_id, :hidden);")
+        db.session.execute(sql, {"content":content, "source_msg":id, "posted_by":user, "poster_id":poster_id, "hidden":"f"})
         db.session.commit()
     return redirect(f"/messages/{id}")
 

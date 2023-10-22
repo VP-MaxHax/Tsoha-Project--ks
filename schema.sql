@@ -25,6 +25,7 @@ CREATE TABLE comments (
 	content VARCHAR ( 100 ),
 	source_msg INTEGER,
 	posted_by VARCHAR,
+	poster_id INTEGER,
 	hidden BOOLEAN
 );
 

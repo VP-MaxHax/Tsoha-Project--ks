@@ -67,7 +67,7 @@ def get_followed():
 
 #Fetch comments for specific message specified by id
 def get_comments(id):
-    sql = text("SELECT content, posted_by FROM comments WHERE source_msg=:source_msg")
+    sql = text("SELECT content, posted_by, poster_id FROM comments WHERE source_msg=:source_msg")
     result = db.session.execute(sql, {"source_msg":id})
     comments = result.fetchall()
     return comments

@@ -24,16 +24,22 @@ h1 {text-align: center;}
     <h2>Message:</h2>
     <hr>
 
-    <h3>{{ username.0 }} <a href="/user/{{user_id}}"> User details </a></h3>
+    <h4><a href="/user/{{user_id}}"> {{ username.0 }}  </a></h4>
     <p>{{ message.content }}</p>
 
     <hr>
     <h2>Comments:</h2>
     <hr>
     {% for comment in comments %}
-    <p>{{ comment.posted_by }}</p>
-    <p>{{ comment.content }}</p>
-    <hr>
+    {% if comment.poster_id == 0 %}
+        <h4>{{ comment.posted_by }}</h4>
+        <p>{{ comment.content }}</p>
+        <hr>
+    {% else %}
+        <h4><a href="/user/{{comment.poster_id}}">{{ comment.posted_by }}</a></h4>
+        <p>{{ comment.content }}</p>
+        <hr>
+    {% endif %}
     {% endfor %}
 
     <body>
