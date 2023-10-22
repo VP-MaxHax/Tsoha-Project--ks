@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+
+body {
+    margin: auto;
+    max-width: 45em;
+    font-family: 'Helvetica', 'Arial', sans-serif;
+}
+
+table, th, td {
+  border:1px solid black;
+}
+
+h1, h3, form {text-align: center;}
+
+</style>
+</head>
+
+<body>
+    <h1>Admin page</h1>
+
+    <form method="POST" action="/adminremove">
+        <input type="text" name="entry_id" placeholder="Entry id to delete">
+        <p></p>
+        <input type="radio" name="entry_type" value="users"> Remove user
+        <input type="radio" name="entry_type" value="messages"> Remove message
+        <input type="radio" name="entry_type" value="comments"> Remove comment
+        <p></p>
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+        <button type="submit">Delete</button>
+    </form>
+    <br>
+    <h3>Users</h3>
+    <table style="width:100%">
+        <tr>
+            <th>Id</th>
+            <th>Username</th>
+        </tr>
+        {% for user in users %}
+        <tr>
+            <th>{{ user.user_id }}</th>
+            <th>{{ user.username }}</th>
+        </tr>
+        {% endfor %}
+    </table>
+    <br>
+    <h3>Messages</h3>
+    <table style="width:100%">
+        <tr>
+            <th>Id</th>
+            <th>Content</th>
+            <th>Posted by</th>
+        </tr>
+        {% for message in messages %}
+        <tr>
+            <th>{{ message.id }}</th>
+            <th>{{ message.content }}</th>
+            <th>{{ message.posted_by }}</th>
+        </tr>
+        {% endfor %}
+    </table>
+    <br>
+    <h3>Comments</h3>
+    <table style="width:100%">
+        <tr>
+            <th>Id</th>
+            <th>Content</th>
+            <th>Posted to</th>
+            <th>Posted by</th>
+        </tr>
+        {% for comment in comments %}
+        <tr>
+            <th>{{ comment.comment_id }}</th>
+            <th>{{ comment.content }}</th>
+            <th>{{ comment.source_msg }}</th>
+            <th>{{ comment.poster_id }}</th>
+        </tr>
+        {% endfor %}
+    </table>

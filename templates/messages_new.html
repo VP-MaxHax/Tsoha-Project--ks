@@ -22,7 +22,7 @@ h1 {text-align: center;}
 <body>
     <h2>Post a new message</h2>
     <form method="POST" action="/newmessage">
-        <input type="text" name="message" placeholder="Write the message here", size="100", , maxlength="100">
+        <input type="text" name="message" placeholder="Write the message here", size="100", maxlength="100">
         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
         <input type="hidden" name="is_for_members" value="False">
         <button type="submit">Post</button>

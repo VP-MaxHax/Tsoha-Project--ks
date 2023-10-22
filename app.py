@@ -5,7 +5,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from sqlalchemy.sql import text
 from flask import Flask, redirect, render_template, request, session
 from db import db, get_userid, get_username, get_messages, get_clubmessages,\
-      get_latest, get_followed, get_comments, get_membership, log_user
+      get_latest, get_followed, get_comments, get_membership, log_user, is_admin, fetch_all
 
 app = Flask(__name__)
 app.secret_key = getenv("SECRET_KEY")
@@ -238,3 +238,32 @@ def aks_club():
         return render_template("club.html", count=count[0], messages=messages)
     msg = "You have to be logged in and a Äks-Club member to access this page."
     return render_template("error.html", error=msg)
+
+#Admin page for moderating purpose
+@app.route("/admin")
+def admin():
+    if is_admin():
+        users, messages, comments = fetch_all()
+        return render_template("admin.html", users=users, messages=messages, comments=comments)
+    msg = "Restricted access! This page is only for admin use."
+    return render_template("error.html", error=msg)
+
+#For admin removal of content
+@app.route("/adminremove", methods=["POST"])
+def remove():
+    user = get_userid()
+    if session["csrf_token"] != request.form["csrf_token"]:
+        return render_template("error.html", error="Error 403. Forbidden.")
+    entry_id = request.form["entry_id"]
+    entry_type = request.form["entry_type"]
+    if entry_type == "users":
+        id_ref = "user_id"
+    elif entry_type == "messages":
+        id_ref = "id"
+    elif entry_type == "comments":
+        id_ref = "comment_id"
+    if user and is_admin():
+        sql = f"DELETE FROM {entry_type} WHERE {id_ref} = :entry_id;"
+        db.session.execute(text(sql), {"entry_id":entry_id})
+        db.session.commit()
+    return redirect("/admin")

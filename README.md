@@ -27,9 +27,9 @@ Done:
 - Removing the non essential files from repository
 - Registering as a subscriber
 - Limited access, subscribers only message space. (Members messages also shown in other areas if member)
+- Admin users with ability to moderate messages (Can be accessed only by going to address 'http://127.0.0.1:5000/admin'. Admin account must be enabled manually trough psql console by changing users 'is_staff' row to 'True'.)
 
 To be done:
-- Admin users with ability to moderate messages
 - Making the frontend more user-friendly
 
 

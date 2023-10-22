@@ -104,6 +104,15 @@ def get_membership():
             return True
     return False
 
+def is_admin():
+    user = get_userid()
+    if user:
+        sql = text("SELECT is_staff FROM users WHERE user_id=:user_id")
+        result = db.session.execute(sql, {"user_id":user})
+        staff = result.fetchone()
+        return staff[0]
+    return False
+
 #Updates user_log table with user login/logout info.
 def log_user(action_type: str):
     user = get_userid()
@@ -111,3 +120,13 @@ def log_user(action_type: str):
     sql = text("INSERT INTO user_log (user_id, action, time) VALUES (:user_id, :action, :time);")
     db.session.execute(sql, {"user_id":user, "action":action_type, "time":now})
     db.session.commit()
+
+#Fetches all all rows from tables users, messages and comments. Used in admin page.
+def fetch_all():
+    sql_users = db.session.execute(text("SELECT user_id, username FROM users ORDER BY user_id"))
+    sql_messages = db.session.execute(text("SELECT id, content, posted_by FROM messages ORDER BY id"))
+    sql_comments = db.session.execute(text("SELECT comment_id, content, source_msg, poster_id FROM comments ORDER BY comment_id"))
+    users = sql_users.fetchall()
+    messages = sql_messages.fetchall()
+    comments = sql_comments.fetchall()
+    return users, messages, comments
