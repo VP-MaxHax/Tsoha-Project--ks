@@ -1,4 +1,3 @@
-Users table:
 CREATE TABLE users (
 	user_id serial PRIMARY KEY,
 	username VARCHAR ( 50 ) UNIQUE NOT NULL,
@@ -10,7 +9,6 @@ CREATE TABLE users (
     last_login TIMESTAMP 
 );
 
-Messages table:
 CREATE TABLE messages (
 	id serial PRIMARY KEY,
 	content VARCHAR ( 100 ),
@@ -19,7 +17,6 @@ CREATE TABLE messages (
 	hidden BOOLEAN
 );
 
-Comments table:
 CREATE TABLE comments (
 	comment_id serial PRIMARY KEY,
 	content VARCHAR ( 100 ),
@@ -29,9 +26,15 @@ CREATE TABLE comments (
 	hidden BOOLEAN
 );
 
-follows table:
 CREATE TABLE follows (
 	id serial PRIMARY KEY,
 	user_id INTEGER NOT NULL,
 	following_id INTEGER NOT NULL
+);
+
+CREATE TABLE user_log (
+	id serial PRIMARY KEY,
+	user_id INTEGER,
+	action VARCHAR,
+	time TIMESTAMP
 );

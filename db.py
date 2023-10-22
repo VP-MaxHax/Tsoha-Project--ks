@@ -15,7 +15,7 @@ def get_userid():
     return user[0]
 
 #Fetch username based on user id.
-def get_username(user_id):
+def get_username(user_id:int):
     sql = text("SELECT username FROM users WHERE user_id=:user_id")
     result = db.session.execute(sql, {"user_id":user_id})
     username = result.fetchone()
@@ -66,7 +66,7 @@ def get_followed():
     return render_template("error.html", error="Must be logged in to get followed list!")
 
 #Fetch comments for specific message specified by id
-def get_comments(id):
+def get_comments(id:int):
     sql = text("SELECT content, posted_by, poster_id FROM comments WHERE source_msg=:source_msg")
     result = db.session.execute(sql, {"source_msg":id})
     comments = result.fetchall()
@@ -83,3 +83,11 @@ def get_membership():
         if sub_exp[0] > now:
             return True
     return False
+
+#Updates user_log table with user login/logout info.
+def log_user(type:str):
+    user = get_userid()
+    now = datetime.now()
+    sql = text("INSERT INTO user_log (user_id, action, time) VALUES (:user_id, :action, :time);")
+    db.session.execute(sql, {"user_id":user, "action":type, "time":now})
+    db.session.commit()

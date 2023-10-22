@@ -5,7 +5,7 @@ from sqlalchemy.sql import text
 from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import datetime, timedelta
 from os import getenv
-from db import get_userid, get_username, get_messages, get_latest, get_followed, get_comments, db, get_membership, get_clubmessages
+from db import get_userid, get_username, get_messages, get_latest, get_followed, get_comments, db, get_membership, get_clubmessages, log_user
 from secrets import token_hex
 
 app = Flask(__name__)
@@ -51,7 +51,7 @@ def messages_followed():
 
 #Page shows detailed info on message
 @app.route("/messages/<int:id>")
-def detailed(id):
+def detailed(id:int):
     sql = text("SELECT id, content, posted_by FROM messages WHERE id=:id")
     result = db.session.execute(sql, {"id":id})
     message = result.fetchone()
@@ -101,6 +101,7 @@ def login_user():
         if check_password_hash(hash_value, password):
             session["username"] = username
             session["csrf_token"] = token_hex(16)
+            log_user("login")
             return redirect("/")
         else:
             return redirect("/login")
@@ -124,12 +125,14 @@ def register_user():
         db.session.commit()
         session["username"] = username
         session["csrf_token"] = token_hex(16)
+        log_user("login")
         return redirect("/")
     return redirect("/register")
 
 #Logs out the current user
 @app.route("/logout")
 def logout():
+    log_user("logout")
     session["username"] = None
     session["csrf_token"] = None
     return redirect("/")
@@ -183,7 +186,7 @@ def unfollow_user():
 
 #Page detailing information of specific users
 @app.route("/user/<int:id>")
-def user_details(id):
+def user_details(id:int):
     sql = text("SELECT username, last_login FROM users WHERE user_id=:id")
     result = db.session.execute(sql, {"id":id})
     user = result.fetchone()
@@ -217,6 +220,7 @@ def apply_membership():
         return redirect("/")
     return redirect("/membership")
 
+#Members only page
 @app.route("/club")
 def aks_club():
     user = get_userid
